@@ -1,0 +1,35 @@
+[Unit]
+Description=DataDrape AI Service
+After=network.target
+
+[Service]
+Type=notify
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/datadrape-ai
+Environment="PATH=/opt/datadrape-ai/venv/bin"
+Environment="OPENROUTER_API_KEY=your-api-key-here"
+Environment="SITE_URL=https://datadrape.com"
+Environment="SITE_NAME=DataDrape AI"
+ExecStart=/opt/datadrape-ai/venv/bin/gunicorn --config gunicorn_config.py app:app
+Restart=always
+RestartSec=10
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/datadrape-ai/temp_uploads
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=datadrape-ai
+
+[Install]
+WantedBy=multi-user.target
